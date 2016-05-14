@@ -1,0 +1,25 @@
+@@comments :: ?//\*((?!\*/).)*\*//?
+
+program = { definition } $ ;
+
+definition = "(" ~ in:arglist ")" op:ident "(" out:arglist ")" body:body
+           | "compound" ~ name:ident body:compound_body ;
+
+body = "{" { @+:rule } "}" ;
+
+compound_body = "{" { @+:field } "}" ;
+
+field = type:ident name:ident ( array:"[]" | () ) ";" ;
+
+rule = "(" ~ in:arglist ")" op:ident "(" out:arglist ")"
+     | "native" ~ "{" snippets:snippet_list "}" ;
+
+snippet_list = { @+:snippet } ;
+
+arglist = { @+:ident } ;
+
+snippet = loop:ident "{" body:snippet_list "}"
+        | constant:/"[^"]*"/
+        | insert:ident ;
+
+ident = ?/[-_+*/~!:@#$%^&a-zA-Z0-9]+/? ;
